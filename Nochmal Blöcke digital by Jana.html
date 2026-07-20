@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noch mal! Digital V4</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+background:#032331;
+font-family:'Comic Sans MS',cursive;
+color:white;
+
+min-height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+padding:10px;
+}
+
+#app{
+width:fit-content;
+margin:0 auto;
+}
+
+#toolbar{
+margin-bottom:10px;
+text-align:center;
+}
+
+#sheet{
+display:flex;
+align-items:flex-start;
+gap:10px;
+}
+
+#leftArea{
+width:720px;
+}
+
+#columns,
+#board,
+#topScores,
+#bottomScores{
+display:grid;
+grid-template-columns:repeat(15,44px);
+gap:3px;
+}
+
+#topScores{
+margin-bottom:3px;
+}
+
+.header{
+width:44px;
+height:44px;
+background:#f1f1f1;
+color:#111;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:bold;
+border-radius:3px;
+}
+
+.header.start{
+color:#ff0000;
+box-shadow:inset 0 0 0 2px #ff0000;
+}
+
+.scoreCell{
+width:44px;
+height:44px;
+background:#f1f1f1;
+color:#111;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+font-size:22px;
+border-radius:3px;
+}
+
+.scoreCell,
+.resultValue,
+.colorTop,
+.colorBottom,
+.joker,
+.header{
+font-family:'Comic Sans MS',cursive !important;
+font-weight:1200 !important;
+letter-spacing:0.5px;
+}
+
+.scoreCell.top{
+cursor:pointer;
+}
+
+.cross{
+text-decoration:line-through;
+color:red;
+}
+
+.scored,
+.bottomScored{
+box-shadow:inset 0 0 0 4px #35ff35;
+}
+
+.startColumn{
+box-shadow:
+inset 0 0 0 2px rgba(255,255,255,0.75);
+}
+
+.colorScored{
+outline:none;
+}
+
+#board{
+margin:2px 0;
+}
+
+.cell{
+width:44px;
+height:44px;
+border-radius:4px;
+position:relative;
+cursor:pointer;
+overflow:hidden;
+}
+
+.cellCircle{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:34px;
+height:34px;
+border-radius:50%;
+background:rgba(255,255,255,0.18);
+pointer-events:none;
+z-index:1;
+}
+
+.cell.star .cellCircle{
+display:none;
+}
+
+.green{
+background:#a6cf4a;
+}
+
+.yellow{
+background:#f4cf29;
+}
+
+.orange{
+background:#ef9323;
+}
+
+.blue{
+background:#76c6ef;
+}
+
+.red{
+background:#ec3a8a;
+}
+
+.cell.star::before{
+content:"★";
+position:absolute;
+left:50%;
+top:46%;
+transform:translate(-50%,-52%);
+font-size:35px;
+
+color:rgba(255,255,255,0.22);
+
+-webkit-text-stroke:1.5px white;
+
+pointer-events:none;
+
+z-index:3;
+}
+
+.cell.checked::after,
+.cell.checked::marker{
+
+content:"";
+
+position:absolute;
+
+width:40px;
+height:5px;
+
+border-radius:999px;
+
+left:50%;
+top:50%;
+
+transform-origin:center;
+
+z-index:10;
+
+}
+
+.xmark{
+position:absolute;
+inset:0;
+pointer-events:none;
+z-index:10;
+}
+
+.xmark::before,
+.xmark::after{
+
+content:"";
+
+position:absolute;
+
+left:50%;
+top:50%;
+
+width:44px;
+height:5px;
+
+background:#111;
+
+border-radius:999px;
+
+transform-origin:center;
+
+}
+
+.xmark::before{
+transform:translate(-50%,-50%) rotate(45deg);
+}
+
+.xmark::after{
+transform:translate(-50%,-50%) rotate(-45deg);
+}
+
+#jokerBar{
+
+margin-top:15px;
+
+background:white;
+
+padding:6px 10px;
+
+border-radius:12px;
+
+width:665px;
+
+display:flex;
+align-items:center;
+gap:12px;
+
+}
+
+#jokerInfo{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.infoBox{
+
+width:42px;
+height:42px;
+
+background:#222;
+
+color:white;
+
+border-radius:8px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:28px;
+font-weight:bold;
+
+}
+
+.infoSlash{
+font-size:42px;
+font-weight:bold;
+color:#222;
+}
+
+.infoEq{
+font-size:32px;
+font-weight:bold;
+color:#222;
+}
+
+#jokerRow{
+display:flex;
+justify-content:space-between;
+flex:1;
+}
+
+
+.joker{
+
+width:44px;
+height:44px;
+
+border-radius:50%;
+
+background:white;
+
+color:black;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:30px;
+font-weight:bold;
+
+cursor:pointer;
+
+border:4px solid #222;
+
+position:relative;
+overflow:visible;
+}
+
+.joker.used{
+
+background:white;
+
+color:black;
+
+}
+
+.joker.used::before,
+.joker.used::after{
+
+content:"";
+
+position:absolute;
+
+width:56px;
+height:6px;
+
+background:#222;
+
+border-radius:999px;
+
+left:50%;
+top:50%;
+
+transform-origin:center;
+
+z-index:10;
+
+}
+
+.joker.used::before{
+
+transform:
+translate(-50%,-50%)
+rotate(45deg);
+
+}
+
+.joker.used::after{
+
+transform:
+translate(-50%,-50%)
+rotate(-45deg);
+
+}
+
+#rightArea{
+width:220px;
+}
+
+#colorScorePanel{
+margin-bottom:20px;
+}
+
+.colorRow{
+display:flex;
+gap:3px;
+margin-bottom:3px;
+}
+
+.colorTop,
+.colorBottom{
+width:44px;
+height:44px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:bold;
+color:white;
+position:relative;
+border-radius:4px;
+}
+
+.colorBoxScored{
+box-shadow:inset 0 0 0 4px white;
+}
+
+.topValue,
+.bottomValue{
+display:block;
+}
+
+.colorTop{
+cursor:pointer;
+}
+
+.colorTop.cross{
+text-decoration:line-through;
+color:black;
+}
+
+.colorGreen{
+background:#a6cf4a;
+}
+
+.colorYellow{
+background:#f4cf29;
+}
+
+.colorOrange{
+background:#ef9323;
+}
+
+.colorBlue{
+background:#76c6ef;
+}
+
+.colorRed{
+background:#ec3a8a;
+}
+
+.resultRow{
+display:flex;
+justify-content:flex-start;
+align-items:center;
+gap:8px;
+margin-bottom:8px;
+}
+
+.resultLabel{
+font-size:22px;
+font-weight:bold;
+width:90px;
+text-align:right;
+}
+
+.resultOperator{
+width:24px;
+text-align:center;
+font-size:34px;
+font-weight:bold;
+color:white;
+}
+
+.resultOperator.plus{
+color:#8fd12f;
+}
+
+.resultOperator.minus{
+color:#ff4040;
+}
+
+.resultValue{
+width:90px;
+height:48px;
+background:white;
+color:black;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+font-weight:bold;
+border-radius: 10px;
+}
+
+#bottomReset{
+display:flex;
+justify-content:flex-end;
+gap:6px;
+margin-top:10px;
+}
+
+#resetBtn,
+#menuBtn{
+padding:6px 10px;
+font-size:12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#d9d9d9;
+color:#333;
+}
+#eyeBtn{
+
+width:48px;
+height:48px;
+
+border:none;
+border-radius:10px;
+
+cursor:pointer;
+
+background:white;
+
+font-size:24px;
+
+}
+
+#eyeBtn:hover{
+
+background:#e9e9e9;
+
+}
+
+#resetBtn:hover,
+#menuBtn:hover{
+background:#c8c8c8;
+}
+
+#endMsg{
+margin-top:10px;
+font-size:22px;
+font-weight:bold;
+color:#7cff7c;
+}
+
+#popupMessage{
+position:fixed;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+background:rgba(0,0,0,0.85);
+color:white;
+padding:20px 30px;
+border-radius:12px;
+font-size:32px;
+font-weight:bold;
+z-index:9999;
+display:none;
+box-shadow:0 0 20px black;
+}
+
+#menuScreen{
+position:relative;
+width:900px;
+height:700px;
+}
+
+#menuTitle{
+
+position:absolute;
+
+left:50%;
+top:50%;
+
+transform:translate(-50%,-50%);
+
+font-family:'Comic Sans MS',cursive;
+
+font-size:72px;
+
+font-weight:bold;
+
+color:white;
+
+}
+
+#credits{
+
+font-size:15px;
+
+font-weight:bold;
+
+margin-top:5px;
+
+text-align:center;
+
+color:rgba(255,255,255,0.8);
+
+letter-spacing:1px;
+
+}
+
+
+.planet{
+
+position:absolute;
+
+width:120px;
+height:120px;
+
+border-radius:50%;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+align-items:center;
+
+cursor:pointer;
+
+transition:0.2s;
+
+font-family:'Comic Sans MS',cursive;
+
+}
+
+.planet:hover{
+
+transform:scale(1.08);
+
+}
+
+.planetNumber{
+
+font-size:42px;
+font-weight:bold;
+
+}
+
+.planetLabel{
+
+font-size:14px;
+text-align:center;
+
+}
+
+.blackPlanet{
+background:#222;
+color:white;
+
+left:390px;
+top:40px;
+}
+
+.redPlanet{
+background:#ec3a8a;
+
+right:120px;
+top:160px;
+}
+
+.lightbluePlanet{
+background:#76c6ef;
+
+right:40px;
+top:320px;
+}
+
+.lightgreenPlanet{
+background:#a6cf4a;
+
+right:120px;
+bottom:120px;
+}
+
+.orangeMenu{
+background:#ef9323;
+
+left:120px;
+bottom:120px;
+}
+
+.purplePlanet{
+background:#8a5cff;
+
+left:40px;
+top:320px;
+}
+
+.yellowMenu{
+background:#f4cf29;
+color:black;
+
+left:120px;
+top:160px;
+}
+
+.janaPlanet{
+background:#0f4a8a;
+
+color:white;
+
+left:390px;
+bottom:40px;
+}
+
+@media(max-width:1000px){
+
+#sheet{
+flex-direction:column;
+}
+
+#rightArea{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="menuScreen">
+
+<div id="menuTitle">
+NOCH MAL!
+<div id="credits">
+made by jagro
+</div>
+</div>
+
+<div class="planet blackPlanet" data-board="black">
+<div class="planetNumber">0</div>
+<div class="planetLabel">Schwarz</div>
+</div>
+
+<div class="planet redPlanet" data-board="red">
+<div class="planetNumber">I</div>
+<div class="planetLabel">Rot</div>
+</div>
+
+<div class="planet lightbluePlanet" data-board="lightblue">
+<div class="planetNumber">II</div>
+<div class="planetLabel">Hellblau</div>
+</div>
+
+<div class="planet lightgreenPlanet" data-board="lightgreen">
+<div class="planetNumber">III</div>
+<div class="planetLabel">Hellgrün</div>
+</div>
+
+<div class="planet orangeMenu" data-board="orange">
+<div class="planetNumber">IV</div>
+<div class="planetLabel">Orange</div>
+</div>
+
+<div class="planet purplePlanet" data-board="purple">
+<div class="planetNumber">V</div>
+<div class="planetLabel">Lila</div>
+</div>
+
+<div class="planet yellowMenu" data-board="yellow">
+<div class="planetNumber">VI</div>
+<div class="planetLabel">Gelb</div>
+</div>
+
+<div class="planet janaPlanet" data-board="jana">
+<div class="planetNumber">★</div>
+<div class="planetLabel">Jana Spezial coming soon</div>
+</div>
+
+</div>
+
+<div id="app" style="display:none;">
+
+<div id="sheet">
+
+<div id="leftArea">
+
+<div id="columns"></div>
+
+<div id="board"></div>
+
+<div id="topScores"></div>
+
+<div id="bottomScores"></div>
+
+<div id="jokerBar">
+
+<div id="jokerInfo">
+<span class="infoBox">?</span>
+<span class="infoSlash">/</span>
+<span class="infoBox">✖</span>
+<span class="infoEq">=</span>
+</div>
+
+<div id="jokerRow"></div>
+
+</div>
+
+</div>
+
+<div id="rightArea">
+
+<div id="colorScorePanel"></div>
+
+<div class="resultRow">
+<div class="resultLabel">BONUS</div>
+<div class="resultOperator">=</div>
+<div class="resultValue" id="bonusScore">0</div>
+</div>
+
+<div class="resultRow">
+<div class="resultLabel">A‑O</div>
+<div class="resultOperator plus">+</div>
+<div class="resultValue" id="aoScore">0</div>
+</div>
+
+<div class="resultRow">
+<div class="resultLabel">!</div>
+<div class="resultOperator plus">+</div>
+<div class="resultValue" id="exclaimScore">0</div>
+</div>
+
+<div class="resultRow">
+<div class="resultLabel">★ (-2)</div>
+<div class="resultOperator minus">-</div>
+<div class="resultValue" id="starPenalty">0</div>
+</div>
+
+<div class="resultRow">
+<div class="resultLabel">TOTAL</div>
+<div class="resultOperator">=</div>
+<div class="resultValue" id="totalScore">0</div>
+<button id="eyeBtn">👁</button>
+</div>
+
+<div id="bottomReset">
+
+<button id="menuBtn">
+Menü
+</button>
+
+<button id="resetBtn">
+Zurücksetzen
+</button>
+
+</div>
+
+<div id="endMsg"></div>
+
+<div id="popupMessage"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let currentBoard="black";
+
+function getStorageKey(){
+return "nochmal-"+currentBoard;
+}
+
+const letters="ABCDEFGHIJKLMNO".split("");
+
+const columnValues=[
+{t:5,b:3},
+{t:3,b:2},
+{t:3,b:2},
+{t:3,b:2},
+{t:2,b:1},
+{t:2,b:1},
+{t:2,b:1},
+{t:1,b:0},
+{t:2,b:1},
+{t:2,b:1},
+{t:2,b:1},
+{t:3,b:2},
+{t:3,b:2},
+{t:3,b:2},
+{t:5,b:3}
+];
+
+const colorValues={
+green:{t:5,b:3},
+yellow:{t:5,b:3},
+blue:{t:5,b:3},
+red:{t:5,b:3},
+orange:{t:5,b:3}
+};
+
+const boards={
+
+black:{
+
+layout:[
+["green","green","green","yellow","yellow","yellow","yellow","green","blue","blue","blue","orange","yellow","yellow","yellow"],
+["orange","green","yellow","green","yellow","yellow","orange","orange","red","blue","blue","orange","orange","green","green"],
+["blue","green","red","green","green","green","green","red","red","red","yellow","yellow","orange","green","green"],
+["blue","red","red","green","orange","orange","blue","blue","green","green","yellow","yellow","orange","red","blue"],
+["red","orange","orange","orange","orange","red","blue","blue","orange","orange","orange","red","red","red","red"],
+["red","blue","blue","red","red","red","red","yellow","yellow","orange","red","blue","blue","blue","orange"],
+["yellow","yellow","blue","blue","blue","blue","red","yellow","yellow","yellow","green","green","green","orange","orange"]
+],
+
+stars:[
+[0,7],
+[1,2],
+[1,4],
+[1,9],
+[2,0],
+[2,6],
+[3,5],
+[3,13],
+[5,1],
+[5,3],
+[5,8],
+[5,10],
+[5,14],
+[6,12]
+]
+
+},
+
+orange:{
+
+layout:[
+
+["orange","orange","yellow","orange","red","red","red","green","orange","red","green","green","green","green","green"],
+
+["blue","orange","orange","orange","green","red","green","green","yellow","red","red","green","blue","yellow","yellow"],
+
+["yellow","blue","blue","green","green","red","green","yellow","yellow","yellow","red","red","blue","yellow","orange"],
+
+["yellow","yellow","blue","yellow","yellow","yellow","yellow","blue","blue","yellow","yellow","red","orange","orange","orange"],
+
+["red","yellow","green","blue","blue","green","yellow","orange","blue","blue","blue","blue","orange","blue","blue"],
+
+["green","green","green","red","blue","blue","blue","orange","green","green","orange","yellow","yellow","blue","blue"],
+
+["green","red","red","red","orange","orange","orange","red","red","orange","orange","orange","red","red","red"]
+
+],
+
+stars:[
+
+[0,0],
+[3,1],
+[0,2],
+[4,3],
+[1,4],
+[4,5],
+[0,6],
+[3,7],
+[1,8],
+[0,9],
+[5,10],
+[1,11],
+[6,12],
+[5,13],
+[2,14],
+
+]
+
+},
+
+purple:{
+
+layout:[
+
+["yellow","yellow","orange","orange","orange","green","blue","blue","blue","yellow","yellow","red","red","green","green"],
+
+["orange","blue","blue","blue","red","red","red","red","red","yellow","yellow","blue","red","red","orange"],
+
+["orange","orange","blue","blue","yellow","red","orange","orange","orange","blue","blue","blue","red","blue","blue"],
+
+["orange","green","yellow","yellow","yellow","yellow","orange","green","orange","blue","blue","orange","blue","blue","red"],
+
+["green","green","green","red","yellow","orange","green","green","yellow","orange","orange","orange","orange","orange","red"],
+
+["blue","green","red","green","green","orange","green","yellow","green","red","red","yellow","yellow","yellow","red"],
+
+["red","red","red","green","blue","blue","yellow","yellow","green","green","green","green","green","yellow","yellow"]
+
+],
+
+stars:[
+
+[0,2],
+[0,5],
+[1,7],
+[1,10],
+[2,9],
+[1,13],
+[2,4],
+[2,6],
+[2,14],
+[3,1],
+[3,11],
+[4,3],
+[4,8],
+[5,0],
+[6,12]
+
+]
+
+},
+
+lightgreen:{
+
+layout:[
+
+["orange","green","blue","blue","red","red","red","green","green","green","yellow","yellow","yellow","red","red"],
+
+["green","green","green","green","red","yellow","green","red","green","green","red","yellow","yellow","red","yellow"],
+
+["blue","blue","orange","green","yellow","yellow","green","blue","red","red","red","red","orange","orange","yellow"],
+
+["blue","orange","orange","orange","orange","green","green","blue","blue","blue","blue","orange","red","orange","orange"],
+
+["blue","red","orange","red","blue","orange","orange","orange","blue","yellow","orange","orange","red","yellow","orange"],
+
+["red","red","red","red","blue","blue","blue","yellow","yellow","yellow","orange","blue","green","green","green"],
+
+["yellow","yellow","yellow","yellow","green","blue","yellow","yellow","orange","orange","green","green","blue","blue","blue"]
+
+],
+
+stars:[
+
+[0,0],   // A1
+[4,9],
+[0,10],  // K1
+[1,7],   // H2
+[2,3],   // D3
+[2,6],   // G3
+[3,12],   // M4
+[4,1],   // B5
+[4,2],   // C5
+[4,8],   // I5
+[4,13],  // N5
+[4,14],  // O5
+[5,11],  // L6
+[6,4],   // E7
+[6,5],   // F7
+
+]
+
+},
+
+yellow:{
+
+layout:[
+
+["red","green","green","yellow","yellow","yellow","yellow","orange","red","red","green","green","green","blue","yellow"],
+
+["red","green","red","red","red","yellow","yellow","orange","red","red","green","green","blue","blue","blue"],
+
+["blue","red","red","blue","blue","green","green","green","green","green","red","blue","orange","blue","red"],
+
+["orange","orange","orange","orange","blue","blue","blue","blue","green","yellow","yellow","blue","red","red","red"],
+
+["yellow","blue","blue","orange","orange","red","red","red","blue","blue","blue","red","red","orange","orange"],
+
+["yellow","yellow","blue","green","green","orange","orange","yellow","yellow","orange","blue","yellow","yellow","yellow","orange"],
+
+["green","yellow","yellow","green","green","orange","orange","yellow","orange","orange","orange","orange","yellow","green","green"]
+
+],
+
+stars:[
+
+[0,3],   // D1
+[0,14],  // O1
+
+[2,1],   // B3
+[2,5],   // F3
+[2,10],  // K3
+[2,12],  // M3
+[2,13],  // N3
+
+[3,7],   // H4
+[3,9],   // J4
+
+[4,11],  // L5
+
+[5,2],   // C6
+[5,6],   // G6
+
+[6,0],   // A7
+[6,4],   // E7
+[6,8]    // I7
+
+]
+
+},
+
+red:{
+
+layout:[
+
+["green","green","orange","orange","orange","red","red","red","yellow","blue","blue","blue","blue","blue","red"],
+
+["red","orange","orange","yellow","green","green","blue","yellow","yellow","yellow","green","orange","orange","orange","red"],
+
+["blue","blue","blue","red","green","green","blue","yellow","red","red","red","orange","green","orange","orange"],
+
+["blue","blue","red","red","red","green","green","orange","orange","red","yellow","green","green","green","green"],
+
+["blue","red","red","blue","blue","blue","orange","blue","blue","orange","yellow","yellow","yellow","yellow","blue"],
+
+["orange","yellow","green","green","blue","orange","orange","green","blue","orange","orange","yellow","red","red","yellow"],
+
+["yellow","yellow","yellow","green","yellow","yellow","yellow","green","green","green","orange","red","red","red","yellow"]
+
+],
+
+stars:[
+
+[0,1],   // B1
+[0,4],   // E1
+[0,8],   // I1
+[1,5],   // F2
+[1,10],  // K2
+[1,13],  // N2
+[2,0],   // A3
+[2,3],   // D3
+[2,6],   // G3
+[3,7],   // H4
+[3,9],   // J4
+[5,11],  // L5
+[5,12],
+[4,14],  // O5
+[5,10],  // K6
+[6,2]    // C7
+
+]
+
+},
+
+lightblue:{
+
+layout:[
+
+["red","red","green","green","yellow","yellow","yellow","green","green","red","red","red","red","orange","orange"],
+
+["orange","red","red","blue","blue","green","yellow","green","green","red","green","yellow","red","orange","orange"],
+
+["blue","orange","orange","blue","green","green","green","red","orange","green","green","green","green","green","yellow"],
+
+["blue","blue","orange","orange","orange","green","red","red","orange","orange","orange","orange","blue","blue","yellow"],
+
+["green","blue","blue","red","red","red","blue","blue","blue","blue","orange","blue","yellow","yellow","green"],
+
+["green","green","yellow","yellow","red","blue","blue","yellow","yellow","yellow","blue","blue","orange","yellow","blue"],
+
+["yellow","yellow","yellow","yellow","red","orange","orange","orange","red","yellow","yellow","blue","orange","red","red"]
+
+],
+
+stars:[
+
+[1,0],
+[2,1],
+[5,2],
+[1,3],
+[6,4],
+[1,5],
+[0,6],
+[4,7],
+[6,8],
+[1,9],
+[4,10],
+[1,11],
+[3,12],
+[2,13],
+[4,14],
+
+]
+
+}
+
+
+};
+
+const columns=document.getElementById("columns");
+const board=document.getElementById("board");
+const topScores=document.getElementById("topScores");
+const bottomScores=document.getElementById("bottomScores");
+const jokerRow=document.getElementById("jokerRow");
+const colorPanel=document.getElementById("colorScorePanel");
+
+function buildBoard(){
+
+columns.innerHTML="";
+board.innerHTML="";
+topScores.innerHTML="";
+bottomScores.innerHTML="";
+jokerRow.innerHTML="";
+colorPanel.innerHTML="";
+
+letters.forEach((letter,index)=>{
+
+const header=document.createElement("div");
+header.className="header";
+
+if(letter==="H"){
+header.classList.add("start");
+}
+
+header.textContent=letter;
+columns.appendChild(header);
+
+});
+
+columnValues.forEach((obj,index)=>{
+
+const top=document.createElement("div");
+top.className="scoreCell top topScore";
+top.dataset.index=index;
+top.textContent=obj.t;
+
+top.onclick=()=>{
+
+top.classList.toggle("cross");
+
+save();
+update();
+
+};
+
+topScores.appendChild(top);
+
+const bottom=document.createElement("div");
+bottom.className="scoreCell bottomScore";
+bottom.textContent=obj.b;
+
+bottomScores.appendChild(bottom);
+
+});
+
+boards[currentBoard]
+.layout
+.forEach((row,rowIndex)=>{
+
+row.forEach((color,colIndex)=>{
+
+const cell=document.createElement("div");
+
+cell.className="cell "+color;
+
+const circle=document.createElement("div");
+circle.className="cellCircle";
+
+cell.appendChild(circle);
+
+if(colIndex===7){
+cell.classList.add("startColumn");
+}
+
+if(
+boards[currentBoard]
+.stars
+.some(
+s=>s[0]===rowIndex&&s[1]===colIndex
+)
+){
+cell.classList.add("star");
+}
+
+cell.onclick=()=>{
+
+if(
+cell.classList.contains("checked")
+){
+
+cell.classList.remove("checked");
+
+cell.querySelector(".xmark")?.remove();
+
+
+save();
+update();
+
+return;
+
+}
+
+if(
+!canCheckCell(cell)
+){
+
+return;
+
+}
+
+cell.classList.add("checked");
+
+if(!cell.querySelector(".xmark")){
+const x=document.createElement("div");
+x.className="xmark";
+cell.appendChild(x);
+}
+
+save();
+update();
+
+};
+
+board.appendChild(cell);
+
+});
+
+});
+
+for(let i=0;i<8;i++){
+
+const joker=document.createElement("div");
+
+joker.className="joker";
+
+joker.textContent="!";
+
+joker.onclick=()=>{
+
+joker.classList.toggle("used");
+
+save();
+update();
+
+};
+
+jokerRow.appendChild(joker);
+
+}
+
+[
+["green","colorGreen"],
+["yellow","colorYellow"],
+["blue","colorBlue"],
+["red","colorRed"],
+["orange","colorOrange"]
+].forEach(item=>{
+
+const color=item[0];
+const css=item[1];
+
+const row=document.createElement("div");
+row.className="colorRow";
+
+const top=document.createElement("div");
+top.className="colorTop "+css;
+top.dataset.color=color;
+
+const topValue=document.createElement("span");
+topValue.className="topValue";
+topValue.textContent="5";
+
+top.appendChild(topValue);
+
+top.onclick=()=>{
+
+top.classList.toggle("cross");
+
+save();
+update();
+
+};
+
+const bottom=document.createElement("div");
+bottom.className="colorBottom "+css;
+
+const bottomValue=document.createElement("span");
+bottomValue.className="bottomValue";
+bottomValue.textContent="3";
+
+bottom.appendChild(bottomValue);
+
+row.append(top);
+row.append(bottom);
+
+colorPanel.appendChild(row);
+
+});
+
+function canCheckCell(cell){
+
+if(cell.classList.contains("checked")){
+return true;
+}
+
+const allCells =
+[...document.querySelectorAll(".cell")];
+
+const checked =
+allCells.filter(c=>
+c.classList.contains("checked")
+);
+
+const index =
+allCells.indexOf(cell);
+
+const row =
+Math.floor(index/15);
+
+const col =
+index%15;
+
+if(checked.length===0){
+
+return col===7;
+
+}
+
+const neighbors=[
+[row-1,col],
+[row+1,col],
+[row,col-1],
+[row,col+1]
+];
+
+for(const [r,c] of neighbors){
+
+if(
+r<0 ||
+r>6 ||
+c<0 ||
+c>14
+){
+continue;
+}
+
+const neighbor=
+allCells[r*15+c];
+
+if(
+neighbor.classList.contains("checked")
+){
+return true;
+}
+
+}
+
+return false;
+
+}
+
+}
+
+let completedColorMemory = [];
+
+function showPopup(text){
+
+const popup =
+document.getElementById("popupMessage");
+
+popup.textContent = text;
+popup.style.display = "block";
+
+setTimeout(()=>{
+
+popup.style.display = "none";
+
+},2000);
+
+}
+
+function save(){
+
+const state={
+
+cells:
+[...document.querySelectorAll(".cell")]
+.map(c=>c.classList.contains("checked")),
+
+jokers:
+[...document.querySelectorAll(".joker")]
+.map(j=>j.classList.contains("used")),
+
+columns:
+[...document.querySelectorAll(".topScore")]
+.map(s=>s.classList.contains("cross")),
+
+colors:{}
+
+};
+
+document
+.querySelectorAll(".colorTop")
+.forEach(c=>{
+
+state.colors[c.dataset.color]
+=
+c.classList.contains("cross");
+
+});
+
+localStorage.setItem(
+getStorageKey(),
+JSON.stringify(state)
+);
+
+}
+
+function load(){
+
+document
+.querySelectorAll(".cell")
+.forEach(cell=>{
+
+cell.classList.remove("checked");
+
+cell
+.querySelectorAll(".xmark")
+.forEach(x=>x.remove());
+
+});
+
+document
+.querySelectorAll(".joker")
+.forEach(joker=>{
+joker.classList.remove("used");
+});
+
+document
+.querySelectorAll(".topScore")
+.forEach(score=>{
+score.classList.remove("cross");
+});
+
+document
+.querySelectorAll(".colorTop")
+.forEach(color=>{
+color.classList.remove("cross");
+});
+
+const state=
+JSON.parse(
+localStorage.getItem(
+getStorageKey()
+)||"null"
+);
+
+if(!state){
+return;
+}
+
+document
+.querySelectorAll(".cell")
+.forEach((cell,index)=>{
+
+if(state.cells?.[index]){
+
+cell.classList.add("checked");
+
+if(!cell.querySelector(".xmark")){
+const x=document.createElement("div");
+x.className="xmark";
+cell.appendChild(x);
+}
+
+}
+
+});
+
+document
+.querySelectorAll(".joker")
+.forEach((joker,index)=>{
+
+if(state.jokers?.[index]){
+
+joker.classList.add("used");
+
+}
+
+});
+
+document
+.querySelectorAll(".topScore")
+.forEach((score,index)=>{
+
+if(state.columns?.[index]){
+
+score.classList.add("cross");
+
+}
+
+});
+
+document
+.querySelectorAll(".colorTop")
+.forEach(c=>{
+
+if(
+state.colors &&
+state.colors[c.dataset.color]
+){
+
+c.classList.add("cross");
+
+}
+
+});
+
+}
+
+let scoreHidden=false;
+
+function update(){
+
+const cells=
+[...document.querySelectorAll(".cell")];
+
+let aoScore=0;
+
+document
+.querySelectorAll(".topScore")
+.forEach(e=>
+e.classList.remove("scored")
+);
+
+document
+.querySelectorAll(".bottomScore")
+.forEach(e=>
+e.classList.remove("bottomScored")
+);
+
+for(let col=0;col<15;col++){
+
+let complete=true;
+
+for(let row=0;row<7;row++){
+
+const index=row*15+col;
+
+if(
+!cells[index]
+.classList
+.contains("checked")
+){
+complete=false;
+}
+
+}
+
+if(complete){
+
+const topField =
+document.querySelectorAll(".topScore")[col];
+
+const bottomField =
+document.querySelectorAll(".bottomScore")[col];
+
+const crossed =
+topField.classList.contains("cross");
+
+if(crossed){
+
+bottomField.classList.add("bottomScored");
+
+}else{
+
+topField.classList.add("scored");
+
+}
+
+aoScore+=
+crossed
+?
+columnValues[col].b
+:
+columnValues[col].t;
+
+}
+
+}
+
+let colorScore=0;
+let completedColors=0;
+
+document
+.querySelectorAll(".colorTop")
+.forEach(e=>{
+
+e.classList.remove("colorScored");
+
+const v=e.querySelector(".topValue");
+
+if(v){
+v.classList.remove("activeScore");
+}
+
+});
+
+document
+.querySelectorAll(".colorTop")
+.forEach(e=>
+e.classList.remove("colorBoxScored")
+);
+
+document
+.querySelectorAll(".colorBottom")
+.forEach(e=>
+e.classList.remove("colorBoxScored")
+);
+
+Object.keys(colorValues)
+.forEach(color=>{
+
+let totalFields=0;
+let checkedFields=0;
+
+cells.forEach(cell=>{
+
+if(
+cell.classList.contains(color)
+){
+
+totalFields++;
+
+if(
+cell.classList.contains("checked")
+){
+checkedFields++;
+}
+
+}
+
+});
+
+if(
+totalFields>0 &&
+totalFields===checkedFields
+){
+
+if(
+!completedColorMemory.includes(color)
+){
+
+const names={
+green:"Grün",
+yellow:"Gelb",
+blue:"Blau",
+red:"Rot",
+orange:"Orange"
+};
+
+showPopup(
+names[color] + " abgeschlossen"
+);
+
+completedColorMemory.push(color);
+
+}
+
+const colorField =
+document.querySelector(
+'.colorTop[data-color="'+color+'"]'
+);
+
+const topValue =
+colorField.querySelector(".topValue");
+
+const bottomValue =
+colorField
+.nextElementSibling
+.querySelector(".bottomValue");
+
+topValue.classList.remove("activeScore");
+bottomValue.classList.remove("activeScore");
+
+const crossed =
+colorField.classList.contains("cross");
+
+if(crossed){
+
+colorField
+.nextElementSibling
+.classList.add("colorBoxScored");
+
+}else{
+
+colorField
+.classList.add("colorBoxScored");
+
+}
+
+completedColors++;
+
+colorScore+=
+crossed
+?
+colorValues[color].b
+:
+colorValues[color].t;
+
+}
+
+});
+
+let uncheckedStars=0;
+
+document
+.querySelectorAll(".star")
+.forEach(star=>{
+
+if(
+!star.classList.contains("checked")
+){
+uncheckedStars++;
+}
+
+});
+
+const starPenalty=
+uncheckedStars*2;
+
+const bonus = colorScore;
+const unusedJokers =
+document.querySelectorAll(".joker:not(.used)")
+.length;
+
+const exclaim = unusedJokers;
+
+const total=
+aoScore+
+colorScore+
+bonus+
+exclaim-
+starPenalty;
+
+document
+.getElementById("aoScore")
+.textContent=
+scoreHidden ? "?" : aoScore;
+
+document
+.getElementById("bonusScore")
+.textContent=
+scoreHidden ? "?" : bonus;
+
+document
+.getElementById("exclaimScore")
+.textContent=
+scoreHidden ? "?" : exclaim;
+
+document
+.getElementById("starPenalty")
+.textContent=
+scoreHidden ? "?" : starPenalty;
+
+document
+.getElementById("totalScore")
+.textContent=
+scoreHidden ? "?" : total;
+
+document
+.getElementById("endMsg")
+.textContent=
+completedColors>=2
+?
+"Spielende erreicht"
+:
+"";
+
+}
+
+document
+.getElementById("resetBtn")
+.addEventListener(
+"click",
+()=>{
+
+if(
+!confirm("Spielfeld wirklich zurücksetzen?")
+){
+return;
+}
+
+document
+.querySelectorAll(".cell")
+.forEach(cell=>{
+
+cell.classList.remove("checked");
+
+cell
+.querySelectorAll(".xmark")
+.forEach(x=>x.remove());
+
+});
+
+document
+.querySelectorAll(".joker")
+.forEach(joker=>{
+joker.classList.remove("used");
+});
+
+document
+.querySelectorAll(".topScore")
+.forEach(score=>{
+score.classList.remove("cross");
+});
+
+document
+.querySelectorAll(".colorTop")
+.forEach(color=>{
+color.classList.remove("cross");
+});
+
+localStorage.removeItem(
+getStorageKey()
+);
+
+update();
+
+}
+);
+
+document
+.querySelectorAll(".planet")
+.forEach(btn=>{
+
+btn.onclick=()=>{
+
+currentBoard =
+btn.dataset.board;
+
+document
+.getElementById("eyeBtn")
+.addEventListener("click",()=>{
+
+scoreHidden=!scoreHidden;
+
+document
+.getElementById("eyeBtn")
+.textContent=
+scoreHidden ? "🙈" : "👁";
+
+update();
+
+});
+
+buildBoard();
+
+load();
+
+update();
+
+document
+.getElementById("menuScreen")
+.style.display="none";
+
+document
+.getElementById("app")
+.style.display="block";
+
+};
+
+});
+
+document
+.getElementById("menuBtn")
+.addEventListener("click",()=>{
+
+document
+.getElementById("app")
+.style.display="none";
+
+document
+.getElementById("menuScreen")
+.style.display="block";
+
+});
+
+buildBoard();
+load();
+update();
+
+completedColorMemory =
+Object.keys(colorValues).filter(color=>{
+
+let total=0;
+let checked=0;
+
+document
+.querySelectorAll(".cell")
+.forEach(cell=>{
+
+if(cell.classList.contains(color)){
+total++;
+
+if(cell.classList.contains("checked")){
+checked++;
+}
+}
+
+});
+
+return total>0 && total===checked;
+
+});
+
+</script>
+
+</body>
+</html>
