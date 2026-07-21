@@ -1457,8 +1457,6 @@ return false;
 
 }
 
-let completedColorMemory = [];
-
 function showPopup(text){
 
 const popup =
@@ -1739,12 +1737,32 @@ checkedFields++;
 });
 
 if(
+checkedFields < totalFields
+){
+
+const colorField =
+document.querySelector(
+'.colorTop[data-color="'+color+'"]'
+);
+
+colorField.classList.remove(
+"completedBefore"
+);
+
+}
+  
+if(
 totalFields>0 &&
 totalFields===checkedFields
 ){
 
+const colorField =
+document.querySelector(
+'.colorTop[data-color="'+color+'"]'
+);
+
 if(
-!completedColorMemory.includes(color)
+!colorField.classList.contains("completedBefore")
 ){
 
 const names={
@@ -1759,7 +1777,7 @@ showPopup(
 names[color] + " abgeschlossen"
 );
 
-completedColorMemory.push(color);
+colorField.classList.add("completedBefore");
 
 }
 
@@ -1986,29 +2004,6 @@ buildBoard();
 load();
 update();
 
-completedColorMemory =
-Object.keys(colorValues).filter(color=>{
-
-let total=0;
-let checked=0;
-
-document
-.querySelectorAll(".cell")
-.forEach(cell=>{
-
-if(cell.classList.contains(color)){
-total++;
-
-if(cell.classList.contains("checked")){
-checked++;
-}
-}
-
-});
-
-return total>0 && total===checked;
-
-});
 
 </script>
 
