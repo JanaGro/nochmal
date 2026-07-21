@@ -1948,6 +1948,20 @@ btn.onclick=()=>{
 currentBoard =
 btn.dataset.board;
 
+const backgrounds={
+black:"#032331",
+red:"#5a0f3a",
+lightblue:"#0d3f57",
+lightgreen:"#355c1d",
+orange:"#7a3e00",
+purple:"#4b2b73",
+yellow:"#8a7a00",
+jana:"#0f4a8a"
+};
+
+document.body.style.background =
+backgrounds[currentBoard];
+
 document
 .getElementById("eyeBtn")
 .addEventListener("click",()=>{
