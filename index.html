@@ -730,7 +730,8 @@ width:auto;
 #board,
 #topScores,
 #bottomScores{
-grid-template-columns:repeat(15,30px);
+grid-template-columns:repeat(15,24px);
+gap:2px;
 }
 
 .cell,
@@ -739,16 +740,61 @@ grid-template-columns:repeat(15,30px);
 .colorTop,
 .colorBottom,
 .joker{
-width:30px;
-height:30px;
+width:24px;
+height:24px;
+}
+
+.header,
+.scoreCell,
+.colorTop,
+.colorBottom{
+font-size:14px;
+}
+
+.cellCircle{
+width:18px;
+height:18px;
+}
+
+.cell.star::before{
+font-size:20px;
+-webkit-text-stroke:1px white;
+}
+
+.xmark::before,
+.xmark::after{
+width:24px;
+height:4px;
+}
+
+#jokerBar{
+width:390px;
+}
+
+.infoBox{
+width:24px;
+height:24px;
+font-size:16px;
+}
+
+.infoSlash{
+font-size:20px;
+}
+
+.infoEq{
+font-size:18px;
+}
+
+.joker{
+font-size:18px;
 }
 
 }
 
 </style>
 
-Nochmal Icon.png
-<link rel="apple-touch-icon
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
