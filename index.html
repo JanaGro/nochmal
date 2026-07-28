@@ -722,8 +722,25 @@ width:100%;
 
 @media (max-width: 500px){
 
-#app{
-zoom:0.75;
+#leftArea{
+width:auto;
+}
+
+#columns,
+#board,
+#topScores,
+#bottomScores{
+grid-template-columns:repeat(15,34px);
+}
+
+.cell,
+.header,
+.scoreCell,
+.colorTop,
+.colorBottom,
+.joker{
+width:34px;
+height:34px;
 }
 
 }
