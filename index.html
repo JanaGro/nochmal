@@ -564,8 +564,8 @@ box-shadow:0 0 20px black;
 
 #menuScreen{
 position:relative;
-width:900px;
-height:700px;
+width:min(900px,100vw);
+height:min(700px,100vh);
 }
 
 #menuTitle{
@@ -651,62 +651,56 @@ text-align:center;
 .blackPlanet{
 background:#222;
 color:white;
-
-left:390px;
-top:40px;
+left:50%;
+top:6%;
+transform:translateX(-50%);
 }
 
 .redPlanet{
 background:#ec3a8a;
-
-right:120px;
-top:160px;
+right:12%;
+top:22%;
 }
 
 .lightbluePlanet{
 background:#76c6ef;
-
-right:40px;
-top:320px;
+right:4%;
+top:45%;
 }
 
 .lightgreenPlanet{
 background:#a6cf4a;
-
-right:120px;
-bottom:120px;
+right:12%;
+bottom:16%;
 }
 
 .orangeMenu{
 background:#ef9323;
-
-left:120px;
-bottom:120px;
+left:12%;
+bottom:16%;
 }
 
 .purplePlanet{
 background:#8a5cff;
-
-left:40px;
-top:320px;
+left:4%;
+top:45%;
 }
 
 .yellowMenu{
 background:#f4cf29;
 color:black;
-
-left:120px;
-top:160px;
+left:12%;
+top:22%;
 }
 
 .janaPlanet{
 background:#0f4a8a;
-
 color:white;
-
-left:390px;
-bottom:40px;
+left:50%;
+bottom:6%;
+transform:translateX(-50%);
 }
+
 
 @media(max-width:1000px){
 
@@ -788,6 +782,31 @@ font-size:18px;
 
 .joker{
 font-size:18px;
+}
+
+}
+
+@media (max-width: 700px){
+
+.planet{
+width:80px;
+height:80px;
+}
+
+.planetNumber{
+font-size:28px;
+}
+
+.planetLabel{
+font-size:10px;
+}
+
+#menuTitle{
+font-size:42px;
+}
+
+#credits{
+font-size:10px;
 }
 
 }
