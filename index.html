@@ -569,27 +569,23 @@ height:min(700px,100vh);
 }
 
 #menuTitle{
-
 position:absolute;
-
 left:50%;
 top:50%;
-
 transform:translate(-50%,-50%);
 
 font-family:'Trebuchet MS',sans-serif;
-
-font-size:72px;
-
+font-size:min(72px,10vmin);
 font-weight:bold;
 
 color:white;
-
+text-align:center;
+width:100%;
 }
 
 #credits{
 
-font-size:15px;
+font-size:min(15px, 2vmin);
 
 font-weight:bold;
 
@@ -608,8 +604,8 @@ letter-spacing:1px;
 
 position:absolute;
 
-width:120px;
-height:120px;
+width:min(120px, 16vmin);
+height:min(120px, 16vmin);
 
 border-radius:50%;
 
@@ -636,14 +632,14 @@ transform:scale(1.08);
 
 .planetNumber{
 
-font-size:42px;
+font-size:min(42px, 5vmin);
 font-weight:bold;
 
 }
 
 .planetLabel{
 
-font-size:14px;
+font-size:min(14px, 2.2vmin);
 text-align:center;
 
 }
@@ -786,30 +782,6 @@ font-size:18px;
 
 }
 
-@media (max-width: 700px){
-
-.planet{
-width:80px;
-height:80px;
-}
-
-.planetNumber{
-font-size:28px;
-}
-
-.planetLabel{
-font-size:10px;
-}
-
-#menuTitle{
-font-size:42px;
-}
-
-#credits{
-font-size:10px;
-}
-
-}
 
 </style>
 
