@@ -353,8 +353,8 @@ content:"";
 
 position:absolute;
 
-width:56px;
-height:6px;
+width:clamp(20px,7vmin,56px);
+height:clamp(3px,0.8vmin,6px);
 
 background:#222;
 
@@ -392,7 +392,7 @@ flex-direction:column;
 }
 
 #colorScorePanel{
-margin-bottom:15px;
+margin-bottom:8px;
 }
 
 .colorRow{
@@ -742,8 +742,8 @@ font-size:20px;
 
 .xmark::before,
 .xmark::after{
-width:24px;
-height:4px;
+width:clamp(16px,5vmin,44px);
+height:clamp(2px,0.6vmin,5px);
 }
 
 #jokerBar{
