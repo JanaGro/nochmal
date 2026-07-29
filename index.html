@@ -39,8 +39,8 @@ text-align:center;
 
 #sheet{
 display:flex;
-align-items:flex-start;
-gap:10px;
+align-items:stretch;
+gap:6px;
 }
 
 #leftArea{
@@ -386,11 +386,13 @@ rotate(-45deg);
 }
 
 #rightArea{
-width:min(220px,30vmin);
+width:min(180px,25vmin);
+display:flex;
+flex-direction:column;
 }
 
 #colorScorePanel{
-margin-bottom:20px;
+margin-bottom:15px;
 }
 
 .colorRow{
@@ -499,19 +501,20 @@ border-radius:clamp(4px,1vmin,10px);
 display:flex;
 justify-content:flex-end;
 gap:6px;
-margin-top:10px;
+margin-top:auto;
 }
 
 #resetBtn,
 #menuBtn{
-padding:6px 10px;
-font-size:12px;
+padding:min(6px,1vmin) min(10px,1.5vmin);
+font-size:min(12px,1.6vmin);
 border:none;
-border-radius:6px;
+border-radius:clamp(4px,0.8vmin,6px);
 cursor:pointer;
 background:#d9d9d9;
 color:#333;
 }
+       
 #eyeBtn{
 width:min(48px,6vmin);
 height:min(48px,6vmin);
